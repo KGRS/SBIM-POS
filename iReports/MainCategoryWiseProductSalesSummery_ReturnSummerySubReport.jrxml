@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MainCategoryWiseProductSalesSummery_ReturnSummerySubReport" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="Start_Date" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="End_Date" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+ (RefundSaleItems."SellingPrice"*RefundSaleItems."Quantity") AS COST,
+     MainCategory."MainCategoryCode" AS MainCategory_MainCategoryCode,
+     MainCategory."MainCategoryName" AS MainCategory_MainCategoryName,
+     RefundSale."RefundId" AS RefundSale_RefundId,
+     RefundSale."Refund_from" AS RefundSale_Refund_from,
+     RefundSale."Refund_Total" AS RefundSale_Refund_Total,
+     RefundSale."Refund_user" AS RefundSale_Refund_user,
+     RefundSale."RefundLocation" AS RefundSale_RefundLocation,
+     RefundSale."RefundDate" AS RefundSale_RefundDate,
+     RefundSaleItems."RefundId" AS RefundSaleItems_RefundId,
+     RefundSaleItems."ItemCode" AS RefundSaleItems_ItemCode,
+     RefundSaleItems."Description" AS RefundSaleItems_Description,
+     RefundSaleItems."SellingPrice" AS RefundSaleItems_SellingPrice,
+     RefundSaleItems."Quantity" AS RefundSaleItems_Quantity,
+     RefundSaleItems."Total" AS RefundSaleItems_Total
+FROM
+     "dbo"."RefundSaleItems" RefundSaleItems INNER JOIN "dbo"."RefundSale" RefundSale ON RefundSaleItems."RefundId" = RefundSale."RefundId"
+     INNER JOIN "dbo"."Items" Items ON RefundSaleItems."ItemCode" = Items."ItemCode"
+     INNER JOIN "dbo"."MainCategory" MainCategory ON Items."MainCategoryCode" = MainCategory."MainCategoryCode"
+
+WHERE RefundSale."RefundDate" >=$P{Start_Date}
+AND RefundSale."RefundDate" <=$P{End_Date}
+
+order by MainCategory."MainCategoryCode",
+RefundSaleItems."ItemCode"]]>
+	</queryString>
+	<field name="COST" class="java.lang.Double"/>
+	<field name="MainCategory_MainCategoryCode" class="java.lang.String"/>
+	<field name="MainCategory_MainCategoryName" class="java.lang.String"/>
+	<field name="RefundSale_RefundId" class="java.lang.String"/>
+	<field name="RefundSale_Refund_from" class="java.lang.String"/>
+	<field name="RefundSale_Refund_Total" class="java.lang.Double"/>
+	<field name="RefundSale_Refund_user" class="java.lang.String"/>
+	<field name="RefundSale_RefundLocation" class="java.lang.String"/>
+	<field name="RefundSale_RefundDate" class="java.sql.Timestamp"/>
+	<field name="RefundSaleItems_RefundId" class="java.lang.String"/>
+	<field name="RefundSaleItems_ItemCode" class="java.lang.String"/>
+	<field name="RefundSaleItems_Description" class="java.lang.String"/>
+	<field name="RefundSaleItems_SellingPrice" class="java.lang.Double"/>
+	<field name="RefundSaleItems_Quantity" class="java.lang.Double"/>
+	<field name="RefundSaleItems_Total" class="java.lang.Double"/>
+	<variable name="Cat_total" class="java.lang.Double" resetType="Group" resetGroup="MainCategory_MainCategoryCode" calculation="Sum">
+		<variableExpression><![CDATA[$F{COST}]]></variableExpression>
+	</variable>
+	<variable name="test" class="java.lang.String"/>
+	<variable name="ret_total" class="java.lang.Double" incrementType="Group" incrementGroup="MainCategory_MainCategoryCode" calculation="Sum">
+		<variableExpression><![CDATA[$V{Cat_total}.equals(null)?0.00:$V{Cat_total}]]></variableExpression>
+		<initialValueExpression><![CDATA[0.00]]></initialValueExpression>
+	</variable>
+	<group name="MainCategory_MainCategoryCode">
+		<groupExpression><![CDATA[$F{MainCategory_MainCategoryCode}]]></groupExpression>
+		<groupHeader>
+			<band height="15">
+				<textField>
+					<reportElement x="98" y="2" width="186" height="11"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Times New Roman" size="9"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{MainCategory_MainCategoryName}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="19" y="2" width="79" height="11"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Courier New" size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Main Category-]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="33">
+				<line>
+					<reportElement x="474" y="5" width="59" height="1"/>
+				</line>
+				<line>
+					<reportElement x="474" y="25" width="59" height="1"/>
+					<graphicElement>
+						<pen lineWidth="2.0" lineStyle="Double"/>
+					</graphicElement>
+				</line>
+				<textField pattern="#,##0.00;(-#,##0.00)">
+					<reportElement x="470" y="7" width="61" height="16"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Courier New" size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Double"><![CDATA[$V{Cat_total}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="421" y="7" width="49" height="16" forecolor="#000000"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Courier New" size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total]]></text>
+				</staticText>
+				<line>
+					<reportElement x="0" y="29" width="554" height="1" forecolor="#99CCFF"/>
+					<graphicElement>
+						<pen lineWidth="0.75" lineStyle="Solid" lineColor="#000000"/>
+					</graphicElement>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement x="4" y="4" width="219" height="14" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Return Summery]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="29">
+			<staticText>
+				<reportElement x="19" y="6" width="94" height="14" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Item Code ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="421" y="7" width="34" height="13" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Price]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="26" width="557" height="1" forecolor="#99CCFF"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="474" y="7" width="57" height="13"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Courier New" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="147" y="6" width="93" height="14" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Description]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="325" y="6" width="59" height="14" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quantity]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="17" splitType="Stretch">
+			<textField>
+				<reportElement x="147" y="2" width="170" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{RefundSaleItems_Description}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="19" y="2" width="120" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{RefundSaleItems_ItemCode}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;(###0.00)">
+				<reportElement x="346" y="2" width="37" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{RefundSaleItems_Quantity}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;(-#,##0.00)">
+				<reportElement x="396" y="2" width="59" height="14"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Courier New" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{RefundSaleItems_SellingPrice}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;(-#,##0.00)">
+				<reportElement x="474" y="2" width="57" height="14"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Courier New" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{COST}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="29">
+			<staticText>
+				<reportElement x="380" y="6" width="86" height="16" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Return Total -]]></text>
+			</staticText>
+			<textField pattern="#,##0.00;(-#,##0.00)">
+				<reportElement x="470" y="6" width="61" height="16"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$V{ret_total}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="476" y="4" width="59" height="1"/>
+			</line>
+			<line>
+				<reportElement x="476" y="24" width="59" height="1"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineStyle="Double"/>
+				</graphicElement>
+			</line>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="chaminda" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="Start_Date" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="End_Date" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="User" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     OrderDetails."Order_Id" AS OrderDetails_Order_Id,
+     OrderDetails."ItemCode" AS OrderDetails_ItemCode,
+     OrderDetails."ItemName" AS OrderDetails_ItemName,
+     OrderDetails."Qty" AS OrderDetails_Qty,
+     OrderDetails."SellPrice" AS OrderDetails_SellPrice,
+     OrderDetails."Discount" AS OrderDetails_Discount,
+     OrderDetails."Total" AS OrderDetails_Total,
+     OrderDetails."TotalWithDiscount" AS OrderDetails_TotalWithDiscount,
+     OrderDetails."Status" AS OrderDetails_Status,
+     ClientCompany."Companyname" AS ClientCompany_Companyname,
+     ClientCompany."Address" AS ClientCompany_Address,
+     ClientCompany."Telephone1" AS ClientCompany_Telephone1,
+     ClientCompany."Telephone2" AS ClientCompany_Telephone2,
+     ClientCompany."Fax" AS ClientCompany_Fax,
+     ClientCompany."Email" AS ClientCompany_Email,
+     ClientCompany."Web" AS ClientCompany_Web,
+     ClientCompany."VATRegistrationNo" AS ClientCompany_VATRegistrationNo,
+     Items."SellPrice" AS Items_SellPrice,
+     Items."PurchasePrice" AS Items_PurchasePrice,
+     Items."PresentageBillSellPrice" AS Items_PresentageBillSellPrice,
+     Items."Quantity" AS Items_Quantity,
+     Items."ItemCode" AS Items_ItemCode,
+     Items."ItemName" AS Items_ItemName,
+     Items."MainCategoryCode" AS Items_MainCategoryCode,
+     Items."Visibility" AS Items_Visibility
+FROM
+     "dbo"."OrderDetails" OrderDetails INNER JOIN "dbo"."Items" Items ON OrderDetails."ItemCode" != Items."ItemCode",
+     "dbo"."ClientCompany" ClientCompany
+
+ORDER BY
+     Items."ItemCode" ASC,
+     Items."Quantity" ASC]]>
+	</queryString>
+	<field name="OrderDetails_Order_Id" class="java.lang.String"/>
+	<field name="OrderDetails_ItemCode" class="java.lang.String"/>
+	<field name="OrderDetails_ItemName" class="java.lang.String"/>
+	<field name="OrderDetails_Qty" class="java.lang.Double"/>
+	<field name="OrderDetails_SellPrice" class="java.lang.Double"/>
+	<field name="OrderDetails_Discount" class="java.lang.Double"/>
+	<field name="OrderDetails_Total" class="java.lang.Double"/>
+	<field name="OrderDetails_TotalWithDiscount" class="java.lang.Double"/>
+	<field name="OrderDetails_Status" class="java.lang.Integer"/>
+	<field name="ClientCompany_Companyname" class="java.lang.String"/>
+	<field name="ClientCompany_Address" class="java.lang.String"/>
+	<field name="ClientCompany_Telephone1" class="java.lang.String"/>
+	<field name="ClientCompany_Telephone2" class="java.lang.String"/>
+	<field name="ClientCompany_Fax" class="java.lang.String"/>
+	<field name="ClientCompany_Email" class="java.lang.String"/>
+	<field name="ClientCompany_Web" class="java.lang.String"/>
+	<field name="ClientCompany_VATRegistrationNo" class="java.lang.String"/>
+	<field name="Items_SellPrice" class="java.lang.Double"/>
+	<field name="Items_PurchasePrice" class="java.lang.Double"/>
+	<field name="Items_PresentageBillSellPrice" class="java.lang.Double"/>
+	<field name="Items_Quantity" class="java.lang.Double"/>
+	<field name="Items_ItemCode" class="java.lang.String"/>
+	<field name="Items_ItemName" class="java.lang.String"/>
+	<field name="Items_MainCategoryCode" class="java.lang.String"/>
+	<field name="Items_Visibility" class="java.lang.String"/>
+	<variable name="variable1" class="java.lang.Double" resetType="None" incrementType="Report">
+		<variableExpression><![CDATA[$F{OrderDetails_Qty}.doubleValue()*$F{Items_PurchasePrice}.doubleValue()]]></variableExpression>
+	</variable>
+	<variable name="tblPOSTrans_Qty_3" class="java.lang.Double" resetType="Group" resetGroup="grpItemCode" calculation="Sum">
+		<variableExpression><![CDATA[$F{Items_Quantity}]]></variableExpression>
+	</variable>
+	<variable name="variable2" class="java.lang.Double" resetType="Group" resetGroup="grpItemCode" calculation="Sum">
+		<variableExpression><![CDATA[$F{OrderDetails_TotalWithDiscount}]]></variableExpression>
+	</variable>
+	<variable name="variable5_1" class="java.lang.Double" incrementType="Group" incrementGroup="grpItemCode" calculation="Sum">
+		<variableExpression><![CDATA[$V{cost_total}]]></variableExpression>
+	</variable>
+	<variable name="variable6_1" class="java.lang.Double" incrementType="Group" incrementGroup="grpItemCode" calculation="Sum">
+		<variableExpression><![CDATA[$V{variable2}]]></variableExpression>
+	</variable>
+	<variable name="cost_total" class="java.lang.Double" resetType="Group" resetGroup="grpItemCode">
+		<variableExpression><![CDATA[$V{tblPOSTrans_Qty_3}*$F{Items_PurchasePrice}]]></variableExpression>
+	</variable>
+	<variable name="total_cost" class="java.lang.Double" incrementType="Group" incrementGroup="grpItemCode" calculation="Sum">
+		<variableExpression><![CDATA[$V{cost_total}]]></variableExpression>
+	</variable>
+	<variable name="profit" class="java.lang.Double" resetType="Group" resetGroup="grpItemCode">
+		<variableExpression><![CDATA[$V{variable2}-$V{cost_total}]]></variableExpression>
+	</variable>
+	<variable name="total_profit" class="java.lang.Double" incrementType="Group" incrementGroup="grpItemCode" calculation="Sum">
+		<variableExpression><![CDATA[$V{profit}]]></variableExpression>
+	</variable>
+	<group name="grpItemCode">
+		<groupExpression><![CDATA[$F{Items_ItemCode}]]></groupExpression>
+		<groupHeader>
+			<band height="14">
+				<textField>
+					<reportElement x="1" y="0" width="119" height="12"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Times New Roman" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{OrderDetails_ItemCode}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="126" y="0" width="157" height="12"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Times New Roman" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{OrderDetails_ItemName}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="grpItemCode" pattern="#,##0.00;(#,##0.00)">
+					<reportElement x="473" y="0" width="33" height="12"/>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Double"><![CDATA[$V{tblPOSTrans_Qty_3}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement mode="Transparent" x="291" y="0" width="62" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="Times New Roman" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Double"><![CDATA[$F{Items_PurchasePrice}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement mode="Transparent" x="376" y="0" width="62" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="Times New Roman" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Double"><![CDATA[$F{Items_SellPrice}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="55" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="403" height="20"/>
+				<textElement>
+					<font fontName="Courier New" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ClientCompany_Companyname}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="20" width="403" height="16"/>
+				<textElement>
+					<font fontName="Courier New" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Product wise sales summary]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="36" width="51" height="14"/>
+				<textElement>
+					<font fontName="Courier New" size="10"/>
+				</textElement>
+				<text><![CDATA[From   :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="145" y="36" width="14" height="14"/>
+				<textElement>
+					<font fontName="Courier New" size="10"/>
+				</textElement>
+				<text><![CDATA[To]]></text>
+			</staticText>
+			<textField pattern="yyyy/MM/dd">
+				<reportElement x="53" y="36" width="84" height="14"/>
+				<textElement>
+					<font fontName="Courier New"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{Start_Date}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy/MM/dd">
+				<reportElement x="165" y="36" width="91" height="14"/>
+				<textElement>
+					<font fontName="Courier New"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{End_Date}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="412" y="0" width="143" height="10"/>
+				<textElement textAlignment="Right">
+					<font fontName="Times New Roman" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="2" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="126" y="1" width="66" height="29"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Product name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="1" width="43" height="29"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Product Code]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="473" y="1" width="47" height="29"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Stock in hand]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="29" width="555" height="1"/>
+			</line>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="291" y="1" width="62" height="28"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Purchers price]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="393" y="1" width="45" height="28"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Selling Price]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<pageFooter>
+		<band height="21" splitType="Stretch">
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
+				<reportElement key="textField" x="528" y="6" width="28" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="1" y="2" width="555" height="1" forecolor="#333333"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField" x="358" y="6" width="170" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Courier New" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="266" y="6" width="51" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{User}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="5" width="222" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="5" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[All rights reserved ]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+</jasperReport>

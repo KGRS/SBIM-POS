@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="chaminda" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="Start_Date" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="End_Date" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="User" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     ClientCompany."Companyname" AS ClientCompany_Companyname,
+     ClientCompany."Address" AS ClientCompany_Address,
+     ClientCompany."Telephone1" AS ClientCompany_Telephone1,
+     ClientCompany."Telephone2" AS ClientCompany_Telephone2,
+     ClientCompany."Fax" AS ClientCompany_Fax,
+     ClientCompany."Email" AS ClientCompany_Email,
+     ClientCompany."Web" AS ClientCompany_Web,
+     ClientCompany."VATRegistrationNo" AS ClientCompany_VATRegistrationNo,
+     RefundSale."RefundId" AS RefundSale_RefundId,
+     RefundSale."Refund_from" AS RefundSale_Refund_from,
+     RefundSale."Refund_Total" AS RefundSale_Refund_Total,
+     RefundSale."Refund_user" AS RefundSale_Refund_user,
+     RefundSale."RefundLocation" AS RefundSale_RefundLocation,
+     RefundSale."RefundDate" AS RefundSale_RefundDate,
+     RefundSaleItems."RefundId" AS RefundSaleItems_RefundId,
+     RefundSaleItems."ItemCode" AS RefundSaleItems_ItemCode,
+     RefundSaleItems."Description" AS RefundSaleItems_Description,
+     RefundSaleItems."SellingPrice" AS RefundSaleItems_SellingPrice,
+     RefundSaleItems."Quantity" AS RefundSaleItems_Quantity,
+     RefundSaleItems."Total" AS RefundSaleItems_Total,
+     Items."PurchasePrice" AS Items_PurchasePrice,
+     Items."SellPrice" AS Items_SellPrice
+FROM
+     "dbo"."RefundSale" RefundSale INNER JOIN "dbo"."RefundSaleItems" RefundSaleItems ON RefundSale."RefundId" = RefundSaleItems."RefundId"
+     INNER JOIN "dbo"."Items" Items ON RefundSaleItems."ItemCode" = Items."ItemCode",
+     "dbo"."ClientCompany" ClientCompany
+WHERE
+     RefundSale."RefundDate" >= $P{Start_Date}
+ AND RefundSale."RefundDate" <= $P{End_Date}
+ORDER BY
+     RefundSaleItems."ItemCode" ASC]]>
+	</queryString>
+	<field name="ClientCompany_Companyname" class="java.lang.String"/>
+	<field name="ClientCompany_Address" class="java.lang.String"/>
+	<field name="ClientCompany_Telephone1" class="java.lang.String"/>
+	<field name="ClientCompany_Telephone2" class="java.lang.String"/>
+	<field name="ClientCompany_Fax" class="java.lang.String"/>
+	<field name="ClientCompany_Email" class="java.lang.String"/>
+	<field name="ClientCompany_Web" class="java.lang.String"/>
+	<field name="ClientCompany_VATRegistrationNo" class="java.lang.String"/>
+	<field name="RefundSale_RefundId" class="java.lang.String"/>
+	<field name="RefundSale_Refund_from" class="java.lang.String"/>
+	<field name="RefundSale_Refund_Total" class="java.lang.Double"/>
+	<field name="RefundSale_Refund_user" class="java.lang.String"/>
+	<field name="RefundSale_RefundLocation" class="java.lang.String"/>
+	<field name="RefundSale_RefundDate" class="java.sql.Timestamp"/>
+	<field name="RefundSaleItems_RefundId" class="java.lang.String"/>
+	<field name="RefundSaleItems_ItemCode" class="java.lang.String"/>
+	<field name="RefundSaleItems_Description" class="java.lang.String"/>
+	<field name="RefundSaleItems_SellingPrice" class="java.lang.Double"/>
+	<field name="RefundSaleItems_Quantity" class="java.lang.Double"/>
+	<field name="RefundSaleItems_Total" class="java.lang.Double"/>
+	<field name="Items_PurchasePrice" class="java.lang.Double"/>
+	<field name="Items_SellPrice" class="java.lang.Double"/>
+	<variable name="variable1" class="java.lang.Double" resetType="None" incrementType="Report">
+		<variableExpression><![CDATA[$F{RefundSaleItems_Quantity}.doubleValue()*$F{Items_PurchasePrice}.doubleValue()]]></variableExpression>
+	</variable>
+	<variable name="tblPOSTrans_Qty_3" class="java.lang.Double" resetType="None">
+		<variableExpression><![CDATA[$F{RefundSaleItems_Quantity}]]></variableExpression>
+	</variable>
+	<variable name="variable2" class="java.lang.Double" resetType="None" incrementType="Group" incrementGroup="grpItemCode">
+		<variableExpression><![CDATA[$F{RefundSaleItems_Total}]]></variableExpression>
+	</variable>
+	<variable name="variable5_1" class="java.lang.Double" incrementType="Group" incrementGroup="grpItemCode" calculation="Sum">
+		<variableExpression><![CDATA[$V{cost_total}]]></variableExpression>
+	</variable>
+	<variable name="variable6_1" class="java.lang.Double" incrementType="Group" incrementGroup="grpItemCode" calculation="Sum">
+		<variableExpression><![CDATA[$V{variable2}]]></variableExpression>
+	</variable>
+	<variable name="cost_total" class="java.lang.Double" resetType="None">
+		<variableExpression><![CDATA[$V{tblPOSTrans_Qty_3}*$F{Items_PurchasePrice}]]></variableExpression>
+	</variable>
+	<variable name="total_cost" class="java.lang.Double" incrementType="Group" incrementGroup="grpItemCode" calculation="Sum">
+		<variableExpression><![CDATA[$V{cost_total}]]></variableExpression>
+	</variable>
+	<group name="grpItemCode">
+		<groupExpression><![CDATA[$F{RefundSaleItems_ItemCode}]]></groupExpression>
+		<groupHeader>
+			<band height="14">
+				<textField>
+					<reportElement x="4" y="0" width="109" height="12"/>
+					<textElement>
+						<font fontName="Times New Roman" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{RefundSaleItems_ItemCode}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="115" y="0" width="150" height="12"/>
+					<textElement>
+						<font fontName="Times New Roman" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{RefundSaleItems_Description}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00;(#,##0.00)">
+					<reportElement x="315" y="0" width="39" height="12"/>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Double"><![CDATA[$F{Items_PurchasePrice}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="grpItemCode" pattern="#,##0.00;(#,##0.00)">
+					<reportElement x="354" y="0" width="58" height="12"/>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Double"><![CDATA[$V{cost_total}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="grpItemCode" pattern="#,##0.00;(#,##0.00)">
+					<reportElement x="265" y="0" width="33" height="12"/>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Double"><![CDATA[$V{tblPOSTrans_Qty_3}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00;(#,##0.00)">
+					<reportElement x="426" y="0" width="34" height="12"/>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Double"><![CDATA[$F{Items_SellPrice}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="grpItemCode" pattern="#,##0.00;(#,##0.00)">
+					<reportElement x="462" y="1" width="58" height="11"/>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Double"><![CDATA[$V{variable2}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="2"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="59" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="403" height="20"/>
+				<textElement>
+					<font fontName="Courier New" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ClientCompany_Companyname}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="20" width="403" height="16"/>
+				<textElement>
+					<font fontName="Courier New" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Product wise refund summary]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="36" width="51" height="14"/>
+				<textElement>
+					<font fontName="Courier New" size="10"/>
+				</textElement>
+				<text><![CDATA[From   :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="145" y="36" width="14" height="14"/>
+				<textElement>
+					<font fontName="Courier New" size="10"/>
+				</textElement>
+				<text><![CDATA[To]]></text>
+			</staticText>
+			<textField pattern="yyyy/MM/dd">
+				<reportElement x="53" y="36" width="84" height="14"/>
+				<textElement>
+					<font fontName="Courier New"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{Start_Date}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy/MM/dd">
+				<reportElement x="165" y="36" width="91" height="14"/>
+				<textElement>
+					<font fontName="Courier New"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{End_Date}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="412" y="0" width="143" height="10"/>
+				<textElement textAlignment="Right">
+					<font fontName="Times New Roman" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="2" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="354" y="15" width="58" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="462" y="15" width="58" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="426" y="15" width="34" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Unit]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="115" y="15" width="60" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Item]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="315" y="0" width="97" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Cost]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="315" y="15" width="39" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Unit]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="15" width="43" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Code]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="426" y="0" width="94" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Sell]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="265" y="15" width="33" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Qty]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="29" width="555" height="1"/>
+			</line>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1"/>
+			</line>
+		</band>
+	</columnHeader>
+	<columnFooter>
+		<band height="23" splitType="Stretch">
+			<textField pattern="#,##0.00;(#,##0.00)">
+				<reportElement x="460" y="3" width="60" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$V{variable6_1}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Group" evaluationGroup="grpItemCode" pattern="#,##0.00;(#,##0.00)">
+				<reportElement x="354" y="3" width="58" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$V{total_cost}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="3" width="133" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Report Summary]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1"/>
+			</line>
+			<line>
+				<reportElement x="0" y="20" width="555" height="1"/>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
+				<reportElement key="textField" x="527" y="5" width="28" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="1" width="555" height="1" forecolor="#333333"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField" x="357" y="5" width="170" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Courier New" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="265" y="5" width="51" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{User}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="4" width="222" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="5" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[All rights reserved ]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+</jasperReport>

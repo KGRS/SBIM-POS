@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MainCategoryWiseProductSalesSummery_subreport1" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="End_Date" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Start_Date" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     OtherExpensesPayments."pay_id" AS OtherExpensesPayments_pay_id,
+     OtherExpensesPayments."Pay_Type" AS OtherExpensesPayments_Pay_Type,
+     OtherExpensesPayments."description" AS OtherExpensesPayments_description,
+     OtherExpensesPayments."Pay_date" AS OtherExpensesPayments_Pay_date,
+     OtherExpensesPayments."Pay_Time" AS OtherExpensesPayments_Pay_Time,
+     OtherExpensesPayments."Amount" AS OtherExpensesPayments_Amount,
+     OtherExpensesPayments."UserName" AS OtherExpensesPayments_UserName,
+     OtherExpensesPayments."Remark" AS OtherExpensesPayments_Remark
+FROM
+     "dbo"."OtherExpensesPayments" OtherExpensesPayments
+
+WHERE  OtherExpensesPayments."Pay_date">=$P{Start_Date}
+AND  OtherExpensesPayments."Pay_date" <=$P{End_Date}
+
+order by OtherExpensesPayments."description"]]>
+	</queryString>
+	<field name="OtherExpensesPayments_pay_id" class="java.lang.Integer"/>
+	<field name="OtherExpensesPayments_Pay_Type" class="java.lang.String"/>
+	<field name="OtherExpensesPayments_description" class="java.lang.String"/>
+	<field name="OtherExpensesPayments_Pay_date" class="java.lang.String"/>
+	<field name="OtherExpensesPayments_Pay_Time" class="java.lang.String"/>
+	<field name="OtherExpensesPayments_Amount" class="java.lang.Double"/>
+	<field name="OtherExpensesPayments_UserName" class="java.lang.String"/>
+	<field name="OtherExpensesPayments_Remark" class="java.lang.String"/>
+	<variable name="day_sub" class="java.lang.Double" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[($F{OtherExpensesPayments_Amount}== null ? 0.00 : $F{OtherExpensesPayments_Amount} )]]></variableExpression>
+		<initialValueExpression><![CDATA[0.00]]></initialValueExpression>
+	</variable>
+	<title>
+		<band height="17" splitType="Stretch">
+			<staticText>
+				<reportElement x="4" y="0" width="208" height="14" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Other expenses details ]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="23">
+			<staticText>
+				<reportElement x="10" y="6" width="72" height="12"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Description]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="239" y="6" width="61" height="12"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[User]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="481" y="6" width="52" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="308" y="6" width="52" height="12"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Remark]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="21" width="554" height="1" forecolor="#99CCFF"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="0" y="1" width="554" height="1"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="14" splitType="Stretch">
+			<textField>
+				<reportElement x="239" y="2" width="61" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{OtherExpensesPayments_UserName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="10" y="2" width="222" height="11" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{OtherExpensesPayments_description}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="308" y="2" width="159" height="11" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{OtherExpensesPayments_Remark}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;(-#,##0.00)" isBlankWhenNull="false">
+				<reportElement x="481" y="2" width="52" height="11"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Courier New" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{OtherExpensesPayments_Amount}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="33">
+			<textField pattern="#,##0.00;(-#,##0.00)" isBlankWhenNull="false">
+				<reportElement x="472" y="4" width="61" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$V{day_sub}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="350" y="3" width="88" height="17"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[expenses Total]]></text>
+			</staticText>
+			<line>
+				<reportElement x="472" y="21" width="61" height="1"/>
+				<graphicElement>
+					<pen lineWidth="1.75" lineStyle="Double"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="0" y="27" width="554" height="1" forecolor="#99CCFF"/>
+				<graphicElement>
+					<pen lineWidth="0.75" lineStyle="Solid" lineColor="#000000"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="473" y="3" width="60" height="1"/>
+			</line>
+		</band>
+	</columnFooter>
+</jasperReport>
